@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GC Protect — Your Data</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+body{width:360px;background:#0A0F1E;color:#E8E8E8;min-height:500px}
+.hdr{padding:14px 16px;background:linear-gradient(135deg,#0E1628,#0A0F1E);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px}
+.back{background:none;border:none;color:rgba(255,255,255,0.5);font-size:18px;cursor:pointer;padding:0}
+.title{font-size:15px;font-weight:700}
+.sub{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px}
+.intro{padding:14px 16px;background:rgba(48,209,88,0.05);border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6}
+.intro strong{color:#30D158}
+.section{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.slabel{font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,0.4);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.dot{width:6px;height:6px;border-radius:50%}
+.dot.green{background:#30D158}
+.dot.blue{background:#0A84FF}
+.dot.orange{background:#FF9F0A}
+.item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
+.item:last-child{border-bottom:none}
+.iname{color:rgba(255,255,255,0.7)}
+.ival{color:#fff;font-weight:600;font-variant-numeric:tabular-nums}
+.icontent{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;font-family:monospace}
+.actions{display:flex;gap:6px;margin-top:12px}
+.btn{flex:1;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);border:none;border-radius:8px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:rgba(255,255,255,0.14)}
+.btn.danger{background:rgba(255,69,58,0.1);color:#FF6B6B;border:1px solid rgba(255,69,58,0.2)}
+.btn.danger:hover{background:rgba(255,69,58,0.2)}
+.reveal{padding:8px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);border-radius:8px;margin-top:8px;font-family:monospace;font-size:11px;color:rgba(255,255,255,0.6);max-height:120px;overflow-y:auto;display:none}
+.reveal.show{display:block}
+.reveal .tok{color:#0A84FF}
+.reveal .arrow{color:rgba(255,255,255,0.3);margin:0 4px}
+.reveal .val{color:#30D158}
+.reveal .row{padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.foot{padding:12px 16px;text-align:center;font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5}
+.foot a{color:#0A84FF;text-decoration:none}
+.explain{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.5;margin-top:6px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <button class="back" onclick="window.close()">←</button>
+  <div>
+    <div class="title">🔒 Your Data</div>
+    <div class="sub">Complete transparency · Nothing hidden</div>
+  </div>
+</div>
+
+<div class="intro">
+  <strong>✓ Radical transparency.</strong> Below is everything GC Protect knows about you, where it lives, and who can see it. You control all of it.
+</div>
+
+<div class="section">
+  <div class="slabel"><div class="dot green"></div>BROWSER MEMORY · This tab only</div>
+  <div class="item">
+    <div>
+      <div class="iname">Session vault</div>
+      <div class="explain">Real values matched to tokens for AI response restoration</div>
+    </div>
+    <div class="ival" id="vaultCount">0</div>
+  </div>
+  <div class="reveal" id="vaultReveal"></div>
+  <div class="actions">
+    <button class="btn" onclick="toggleVault()">Reveal contents</button>
+    <button class="btn danger" onclick="clearVault()">Destroy now</button>
+  </div>
+  <div class="explain" style="margin-top:10px">
+    ⏱ Auto-destroys when this tab closes. Nothing persists.
+  </div>
+</div>
+
+<div class="section">
+  <div class="slabel"><div class="dot blue"></div>CHROME LOCAL STORAGE · This device</div>
+  <div class="item">
+    <div>
+      <div class="iname">Audit log entries</div>
+      <div class="explain">Metadata only: timestamps, platforms, counts. No content.</div>
+    </div>
+    <div class="ival" id="logCount">0</div>
+  </div>
+  <div class="item">
+    <div>
+      <div class="iname">Settings & preferences</div>
+      <div class="explain">Your protection toggle, custom rules</div>
+    </div>
+    <div class="ival" id="settingsCount">0</div>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="exportLocal()">Export as JSON</button>
+    <button class="btn danger" onclick="deleteLocal()">Delete all local</button>
+  </div>
+  <div class="explain" style="margin-top:10px">
+    💾 Stored on your device. Never synced without your action.
+  </div>
+</div>
+
+<div class="section">
+  <div class="slabel"><div class="dot orange"></div>SUPABASE · Your account</div>
+  <div class="item">
+    <div>
+      <div class="iname">Protection events</div>
+      <div class="explain">Metadata for dashboard stats. No prompt content.</div>
+    </div>
+    <div class="ival" id="cloudCount">—</div>
+  </div>
+  <div class="item">
+    <div>
+      <div class="iname">Feedback entries</div>
+      <div class="explain">Reports you submitted to help improve</div>
+    </div>
+    <div class="ival" id="feedbackCount">—</div>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="viewCloud()">View in dashboard</button>
+    <button class="btn danger" onclick="deleteAccount()">Delete account</button>
+  </div>
+  <div class="explain" style="margin-top:10px">
+    🔐 Encrypted at rest · Row-level security · Only you can access your data
+  </div>
+</div>
+
+<div class="foot">
+  <a href="https://www.gcprotect.tech/security" target="_blank">Read the full security architecture</a><br>
+  <a href="https://github.com/Gracerobinson12/gcprotect-extension" target="_blank">View source code on GitHub</a>
+</div>
+
+<script src="transparency.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+__MACOSX
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+secrets.json
+
+# Build artifacts
+*.zip
+dist/
+build/
+
+# Logs
+*.log
+
+# Node
+node_modules/
+package-lock.json
+yarn.lock
